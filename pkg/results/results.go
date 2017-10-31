@@ -5,7 +5,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"os"
-	"path"
 	"path/filepath"
 
 	"github.com/giantswarm/e2e-harness/pkg/runner"
@@ -72,7 +71,7 @@ func (r *Results) Read(path string) (*TestSuite, error) {
 }
 
 func Write(fs afero.Fs, results *TestSuite) error {
-	if err := fs.MkdirAll(path.Dir(DefaultRemoteResultsPath), os.ModePerm); err != nil {
+	if err := fs.MkdirAll(DefaultRemoteResultsPath, os.ModePerm); err != nil {
 		return err
 	}
 
