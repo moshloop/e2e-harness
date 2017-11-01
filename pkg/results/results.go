@@ -14,7 +14,6 @@ import (
 )
 
 const (
-	//DefaultResultsFilename    = "junit_01.xml"
 	DefaultResultsFilename    = "results.xml"
 	DefaultResultsPath        = "/workdir/plugins/e2e/" + DefaultResultsFilename
 	DefaultRemoteResultsPath  = "/tmp/results"
@@ -87,16 +86,7 @@ func Write(fs afero.Fs, results *TestSuite) error {
 		return err
 	}
 
-	/*
-		cmd := exec.Command("/bin/busybox", "tar", "-czf", DefaultTarResultsFilename, "*")
-		cmd.Dir = DefaultRemoteResultsPath
-		if err := cmd.Run(); err != nil {
-			return err
-		}
-	*/
 	doneFilename := filepath.Join(DefaultRemoteResultsPath, "done")
-	//tarResultsFilename := filepath.Join(DefaultRemoteResultsPath, DefaultTarResultsFilename)
-	//err = afero.WriteFile(fs, doneFilename, []byte(tarResultsFilename), 0644)
 	err = afero.WriteFile(fs, doneFilename, []byte(resultsFilename), 0644)
 	if err != nil {
 		return err
@@ -107,6 +97,7 @@ func Write(fs afero.Fs, results *TestSuite) error {
 
 func (r *Results) Unpack() error {
 	cmds := []string{
+		"rm -f /workdir/results/*.tar.gz",
 		"kubectl cp heptio-sonobuoy/sonobuoy:/tmp/sonobuoy /workdir/results --namespace=heptio-sonobuoy",
 		"tar xzf /workdir/results/*.tar.gz",
 	}

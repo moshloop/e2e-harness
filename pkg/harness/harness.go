@@ -35,7 +35,22 @@ func (h *Harness) Init() error {
 	if err != nil {
 		return err
 	}
-	return os.MkdirAll(filepath.Join(baseDir, "workdir"), os.ModePerm)
+	dir := filepath.Join(baseDir, "workdir")
+	err = os.MkdirAll(dir, 0777)
+	if err != nil {
+		return err
+	}
+	// circumvent umask settings, by assigning the right
+	// permissions to workdir and its parent
+	err = os.Chmod(baseDir, 0777)
+	if err != nil {
+		return err
+	}
+	err = os.Chmod(dir, 0777)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // WriteConfig is a Task that persists the current config to a file.
